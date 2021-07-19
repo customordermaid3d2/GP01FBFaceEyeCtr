@@ -7,7 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GP01FBFaceEyeCtr", "BepInPl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4C99D785-12A3-4867-922D-F079C8C72C2F}"
 	ProjectSection(SolutionItems) = preProject
-		MEMO.MD = MEMO.MD
 		README.MD = README.MD
 	EndProjectSection
 EndProject
