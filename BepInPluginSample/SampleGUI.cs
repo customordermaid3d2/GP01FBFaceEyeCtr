@@ -43,9 +43,13 @@ namespace GP01FBFaceEyeCtr
             set => IsGUIOn.Value = value;
         }
 
-        public MPN[] mpns;
-        public float[] mpni, mpnib;
-        public string[] mpnnm;
+        private static ConfigEntry<bool> IsAllMaid;
+
+        public static bool isAllMaid
+        {
+            get => IsAllMaid.Value;
+            set => IsAllMaid.Value = value;
+        }
 
         internal static SampleGUI Install(GameObject parent, ConfigFile config)
         {
@@ -55,27 +59,6 @@ namespace GP01FBFaceEyeCtr
             {
                 instance = parent.AddComponent<SampleGUI>();
                 MyLog.LogMessage("GameObjectMgr.Install", instance.name);
-
-                instance.mpns = new MPN[]
-                {
-                    MPN.MabutaUpIn,
-                    MPN.MabutaUpIn2,
-                    MPN.MabutaUpMiddle,
-                    MPN.MabutaUpOut,
-                    MPN.MabutaUpOut2,
-
-                    MPN.MabutaLowIn,
-                    MPN.MabutaLowUpMiddle,
-                    MPN.MabutaLowUpOut
-                };
-                instance.mpni = new float[instance.mpns.Length];
-                instance.mpnib = new float[instance.mpns.Length];
-                instance.mpnnm = new string[instance.mpns.Length];
-                for (int i = 0; i < instance.mpns.Length; i++)
-                {
-                    instance.mpnnm[i] = instance.mpns[i].ToString();
-                }
-
             }
             return instance;
         }
@@ -85,6 +68,7 @@ namespace GP01FBFaceEyeCtr
             myWindowRect = new MyWindowRect(config, MyAttribute.PLAGIN_FULL_NAME
                 );
             IsGUIOn = config.Bind("GUI", "isGUIOn", false);
+            IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
             SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { SampleGUI.isGUIOn = !SampleGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
         }
@@ -157,33 +141,104 @@ namespace GP01FBFaceEyeCtr
             {
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
+
+
+
+                GUILayout.Label("folder select");
+                seletedfolderbak = GUILayout.SelectionGrid(seletedfolder, UtillMPN.foldersNm, 3);
+
+                if (GUI.changed)
+                {
+                    if (seletedfolder != seletedfolderbak)
+                    {
+                        seletedfolder = seletedfolderbak;
+                        UtillMPN.SetFolderMPNs((UtillMPN.folder)seletedfolder);
+                        UtillMPN.UpdateMPNs();
+                    }
+                    GUI.changed = false;
+                }
+
+                #region 슬라이드
+
                 GUI.enabled = SamplePatch.maids[seleted] != null;
 
-                for (int i = 0; i < mpns.Length; i++)
+                for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                 {
-                    GUILayout.Label(mpnnm[i]);
-                    mpnib[i] = GUILayout.HorizontalSlider(mpni[i], 0, 100);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(UtillMPN.nowMPNnm[i]);
+                    UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
+                    GUILayout.EndHorizontal();
+                    UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], 0, 100);
                 }
 
                 if (GUI.changed)
                 {
                     //if (SamplePatch.maids[seleted] != null)
                     {
-                        for (int i = 0; i < mpns.Length; i++)
+                        for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                         {
-                            if (mpni[i] == mpnib[i])
+                            if (UtillMPN.nowMPNv[i] == UtillMPN.nowMPNvb[i])
                             {
                                 continue;
                             }
-                            SamplePatch.maids[seleted].SetProp(mpns[i], (int)(mpni[i] = (int)mpnib[i]));
+                            if (isAllMaid)
+                            {
+                                foreach (var item in SamplePatch.maids)
+                                {
+                                    item?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
+                                }
+                            }
+                            else
+                            {
+                                SamplePatch.maids[seleted].SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
+                            }
                             //MyLog.LogMessage("changed", mpns[i], mpni[i]);
                         }
+                        if (isAllMaid)
+                        {
+                            foreach (var item in SamplePatch.maids)
+                            {
+                                item?.AllProcProp();
+                            }
+                        }
+                        else
+                        {
                             SamplePatch.maids[seleted].AllProcProp();
+                        }
+                        SceneEdit.Instance?.UpdateSliders();
                     }
                     GUI.changed = false;
                 }
 
                 GUI.enabled = true;
+
+                #endregion
+
+                #region 메이드
+
+                GUILayout.BeginHorizontal();
+
+                isAllMaid = GUILayout.Toggle(isAllMaid, "All Maid Aplly");
+                if (GUILayout.Button("Copy All") && SamplePatch.maids[seleted] != null)
+                {
+                    for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
+                    {
+                        if (UtillMPN.nowBools[i])
+                        {
+                            var m = SamplePatch.maids[seleted].GetProp(UtillMPN.nowMPNs[i]);
+                            foreach (var item in SamplePatch.maids)
+                            {
+                                item?.SetProp(UtillMPN.nowMPNs[i], m.value);
+                            }
+                        }
+                        foreach (var item in SamplePatch.maids)
+                        {
+                            item?.AllProcProp();
+                        }
+                    }
+                }
+
+                GUILayout.EndHorizontal();
 
                 GUILayout.Label("maid select");
                 // 여기는 출력된 메이드들 이름만 가져옴
@@ -192,12 +247,11 @@ namespace GP01FBFaceEyeCtr
 
                 if (GUI.changed)
                 {
-                    if (SamplePatch.maids[seleted] != null)
-                    {
-                        mpnUpdate();
-                    }
+                    UtillMPN.UpdateMPNs();
                     GUI.changed = false;
                 }
+
+                #endregion
 
                 GUILayout.EndScrollView();
 
@@ -208,13 +262,7 @@ namespace GP01FBFaceEyeCtr
             GUI.DragWindow(); // 창 드레그 가능하게 해줌. 마지막에만 넣어야함
         }
 
-        public void mpnUpdate()
-        {
-            for (int i = 0; i < mpns.Length; i++)
-            {                
-                mpnib[i] = mpni[i] = SamplePatch.maids[seleted].GetProp(mpns[i]).value;
-            }
-        }
+
 
         public void OnDisable()
         {
@@ -226,6 +274,9 @@ namespace GP01FBFaceEyeCtr
         public static bool isCoroutine = false;
         public static int CoroutineCount = 0;
         public static int seleted;
+        public static int seletedfolder;
+        public static int seletedfolderbak;
+
 
         private IEnumerator MyCoroutine()
         {

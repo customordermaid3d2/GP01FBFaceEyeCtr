@@ -30,7 +30,7 @@ namespace GP01FBFaceEyeCtr
                 maidNames[f_nActiveSlotNo] = f_maid.status.fullNameEnStyle;
                 if (f_maid == maids[SampleGUI.seleted])
                 {
-                    SampleGUI.instance.mpnUpdate();
+                    UtillMPN.UpdateMPNs();
                 }
             }
             //MyLog.LogMessage("CharacterMgr.SetActive", f_nActiveSlotNo, f_bMan, f_maid.status.fullNameEnStyle);
@@ -60,7 +60,7 @@ namespace GP01FBFaceEyeCtr
             //MyLog.LogMessage("CharacterMgr.Deactivate", __instance.status.fullNameEnStyle, idx, val);
             if (__instance== maids[SampleGUI.seleted])
             {
-                SampleGUI.instance.mpnUpdate();
+                UtillMPN.UpdateMPNs(idx);
             }
         }
     }

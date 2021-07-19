@@ -31,6 +31,8 @@ namespace GP01FBFaceEyeCtr
         {
             sample = this;
             MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
+
+            UtillMPN.init();
         }
 
         /// <summary>
