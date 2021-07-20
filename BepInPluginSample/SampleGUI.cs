@@ -168,7 +168,7 @@ namespace GP01FBFaceEyeCtr
                     GUILayout.Label(UtillMPN.nowMPNnm[i]);
                     UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
                     GUILayout.EndHorizontal();
-                    UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], 0, 100);
+                    UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], -100, 200);
                 }
 
                 if (GUI.changed)

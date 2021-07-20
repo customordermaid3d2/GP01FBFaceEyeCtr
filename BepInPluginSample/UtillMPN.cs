@@ -179,7 +179,8 @@ namespace GP01FBFaceEyeCtr
 
         private static void SetNowMPNv(int i)
         {
-            UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = SamplePatch.maids[SampleGUI.seleted].GetProp(UtillMPN.nowMPNs[i]).value;
+            var mp = SamplePatch.maids[SampleGUI.seleted].GetProp(UtillMPN.nowMPNs[i]);
+            UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = mp.value;
         }
     }
 }

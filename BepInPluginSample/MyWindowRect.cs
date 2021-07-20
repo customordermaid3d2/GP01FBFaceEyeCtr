@@ -1,4 +1,5 @@
 ﻿using BepInEx.Configuration;
+using COM3D2.Lilly.Plugin;
 using HarmonyLib;
 using Newtonsoft.Json;
 using System;
@@ -43,6 +44,13 @@ namespace BepInPluginSample
                 }
             }
         }
+
+        private static event Action<int, int> actionScreen;
+        private static event Action actionScreen2;
+
+        private int widthAdd;
+        private int heightAdd;
+
 
         struct Position
         {
@@ -101,6 +109,8 @@ namespace BepInPluginSample
                 harmony = Harmony.CreateAndPatchAll(typeof(MyWindowRect));
             }
             actionSave += save;
+            actionScreen += ScreenChg;
+            actionScreen2 += ScreenChg;
         }
 
         public void load()
@@ -125,11 +135,45 @@ namespace BepInPluginSample
             File.WriteAllText(jsonPath, JsonConvert.SerializeObject(position, Formatting.Indented)); // 자동 들여쓰기
         }
 
+        public void ScreenChg(int width, int height)
+        {
+            if (windowRect.x > Screen.width / 2)
+            {
+                widthAdd = width - Screen.width;
+            }
+            if (windowRect.y > Screen.height / 2)
+            {
+                heightAdd = height - Screen.height;
+            }
+        }
+        
+        public void ScreenChg()
+        {
+            windowRect.x += widthAdd;
+            windowRect.y += heightAdd;            
+        }
+
         [HarmonyPatch(typeof(GameMain), "LoadScene")]
         [HarmonyPostfix]
         public static void LoadScene()
         {
             actionSave();
+        }
+
+        [HarmonyPatch(typeof(Screen), "SetResolution")]
+        [HarmonyPrefix]
+        public static void SetResolution(int width, int height, bool fullscreen)
+        {
+            actionScreen(width, height);
+            MyLog.LogMessage("SetResolution", width, height, fullscreen);
+        }
+
+        [HarmonyPatch(typeof(Screen), "SetResolution")]
+        [HarmonyPostfix]
+        public static void SetResolution()
+        {
+            actionScreen2();
+            MyLog.LogMessage("SetResolution");
         }
     }
 }
