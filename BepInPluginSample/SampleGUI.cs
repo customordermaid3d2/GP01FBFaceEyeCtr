@@ -267,7 +267,7 @@ namespace GP01FBFaceEyeCtr
         public void OnDisable()
         {
             SampleGUI.isCoroutine = false;
-            SampleGUI.myWindowRect.save();
+            SampleGUI.myWindowRect?.save();
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
         }
 

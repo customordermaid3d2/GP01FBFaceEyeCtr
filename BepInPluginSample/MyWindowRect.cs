@@ -46,10 +46,10 @@ namespace BepInPluginSample
         }
 
         private static event Action<int, int> actionScreen;
-        private static event Action actionScreen2;
 
-        private int widthAdd;
-        private int heightAdd;
+
+        private static int widthbak;
+        private static int heightbak;
 
 
         struct Position
@@ -107,10 +107,12 @@ namespace BepInPluginSample
             if (harmony == null)
             {
                 harmony = Harmony.CreateAndPatchAll(typeof(MyWindowRect));
+                widthbak = Screen.width;
+                heightbak = Screen.height;
             }
             actionSave += save;
             actionScreen += ScreenChg;
-            actionScreen2 += ScreenChg;
+
         }
 
         public void load()
@@ -135,23 +137,8 @@ namespace BepInPluginSample
             File.WriteAllText(jsonPath, JsonConvert.SerializeObject(position, Formatting.Indented)); // 자동 들여쓰기
         }
 
-        public void ScreenChg(int width, int height)
-        {
-            if (windowRect.x > Screen.width / 2)
-            {
-                widthAdd = width - Screen.width;
-            }
-            if (windowRect.y > Screen.height / 2)
-            {
-                heightAdd = height - Screen.height;
-            }
-        }
-        
-        public void ScreenChg()
-        {
-            windowRect.x += widthAdd;
-            windowRect.y += heightAdd;            
-        }
+
+
 
         [HarmonyPatch(typeof(GameMain), "LoadScene")]
         [HarmonyPostfix]
@@ -160,19 +147,36 @@ namespace BepInPluginSample
             actionSave();
         }
 
-        [HarmonyPatch(typeof(Screen), "SetResolution")]
-        [HarmonyPrefix]
-        public static void SetResolution(int width, int height, bool fullscreen)
+
+        public void ScreenChg(int width, int height)
         {
-            actionScreen(width, height);
-            MyLog.LogMessage("SetResolution", width, height, fullscreen);
+            if (windowRect.x > widthbak / 2)
+            {
+                windowRect.x +=  width- widthbak;
+            }
+            if (windowRect.y > heightbak / 2)
+            {
+                windowRect.y +=   height- heightbak;
+            }
+            MyLog.LogMessage("SetResolution3", widthbak, heightbak, Screen.fullScreen);
+            MyLog.LogMessage("SetResolution4", Screen.width, Screen.height, Screen.fullScreen);
+            MyLog.LogMessage("SetResolution5", windowRect.x, windowRect.y);
         }
 
-        [HarmonyPatch(typeof(Screen), "SetResolution")]
-        [HarmonyPostfix]
-        public static void SetResolution()
+        [HarmonyPatch(typeof(Screen), "SetResolution", typeof(int), typeof(int), typeof(bool))]
+        [HarmonyPrefix]
+        public static void SetResolutionPre(int width, int height, bool fullscreen)
         {
-            actionScreen2();
+            //MyLog.LogMessage("SetResolution1", width, height, fullscreen);
+        }
+
+        [HarmonyPatch(typeof(Screen), "SetResolution",typeof(int),typeof(int),typeof(bool))]
+        [HarmonyPostfix]
+        public static void SetResolutionPost(int width, int height, bool fullscreen)
+        {
+            actionScreen(width, height);
+            widthbak = width;
+            heightbak = height;
             MyLog.LogMessage("SetResolution");
         }
     }

@@ -55,7 +55,7 @@ namespace GP01FBFaceEyeCtr
 
         [HarmonyPatch(typeof(Maid), "SetProp",typeof(MPN),typeof(int),typeof(bool))]
         [HarmonyPrefix] // CharacterMgr의 SetActive가 실행 전에 아래 메소드 작동
-        public static void SetProp(Maid __instance, MPN idx, int val, bool f_bTemp = false)
+        public static void SetProp(Maid __instance, MPN idx, int val, bool f_bTemp )
         {
             //MyLog.LogMessage("CharacterMgr.Deactivate", __instance.status.fullNameEnStyle, idx, val);
             if (__instance== maids[SampleGUI.seleted])
