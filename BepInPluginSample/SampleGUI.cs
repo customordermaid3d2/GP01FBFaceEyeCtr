@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using BepInPluginSample;
-using COM3D2.Lilly.Plugin;
+using COM3D2.LillyUtill;
 using COM3D2API;
 using System;
 using System.Collections;
@@ -166,9 +165,10 @@ namespace GP01FBFaceEyeCtr
                 {
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(UtillMPN.nowMPNnm[i]);
+                    GUILayout.FlexibleSpace();
                     UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
                     GUILayout.EndHorizontal();
-                    UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], -100, 200);
+                    UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i]);
                 }
 
                 if (GUI.changed)

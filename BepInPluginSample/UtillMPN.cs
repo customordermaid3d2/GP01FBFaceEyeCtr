@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COM3D2.LillyUtill;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace GP01FBFaceEyeCtr
         static Dictionary<folder, List<MPN>> folderMPNl = new Dictionary<folder, List<MPN>>();
         static Dictionary<folder, float[]> folderMPNv = new Dictionary<folder, float[]>();
         static Dictionary<folder, float[]> folderMPNb = new Dictionary<folder, float[]>();
+        static Dictionary<folder, float[]> folderMPNmin = new Dictionary<folder, float[]>();
+        static Dictionary<folder, float[]> folderMPNmax = new Dictionary<folder, float[]>();
         static Dictionary<folder, string[]> folderMPNnm = new Dictionary<folder, string[]>();
         static Dictionary<folder, bool[]> folderBool = new Dictionary<folder, bool[]>();
 
@@ -20,7 +23,7 @@ namespace GP01FBFaceEyeCtr
 
         public static MPN[] nowMPNs;
         public static List<MPN> nowMPNl;
-        public static float[] nowMPNv, nowMPNvb;
+        public static float[] nowMPNv, nowMPNvb, nowMPNmin, nowMPNmax;
         public static string[] nowMPNnm;
         public static bool[] nowBools;
 
@@ -134,6 +137,8 @@ namespace GP01FBFaceEyeCtr
                 folderMPNl.Add(item.Key, item.Value.ToList());
                 folderMPNv[item.Key] = new float[item.Value.Length];
                 folderMPNb[item.Key] = new float[item.Value.Length];
+                folderMPNmax[item.Key] = new float[item.Value.Length];
+                folderMPNmin[item.Key] = new float[item.Value.Length];
                 folderMPNnm[item.Key] = new string[item.Value.Length];
                 folderBool[item.Key] = new bool[item.Value.Length];
                 for (int i = 0; i < item.Value.Length; i++)
@@ -156,16 +161,25 @@ namespace GP01FBFaceEyeCtr
             nowMPNl= folderMPNl[nm];
             nowMPNv = folderMPNv[nm];
             nowMPNvb = folderMPNb[nm];
+            nowMPNmin = folderMPNmin[nm];
+            nowMPNmax = folderMPNmax[nm];
             nowMPNnm = folderMPNnm[nm];
             nowBools = folderBool[nm];
         }
 
         public static void UpdateMPNs(MPN mpn)
         {
+            if (mpnFolder.ContainsKey(mpn))
+            {
             if (mpnFolder[mpn] == nowfolder)
             {                
                 SetNowMPNv(folderMPNl[nowfolder].IndexOf(mpn));
-            } 
+            }
+            }
+            else
+            {
+                MyLog.LogWarning("UpdateMPNs", mpn);
+            }
         }
 
         public static void UpdateMPNs()
@@ -179,8 +193,15 @@ namespace GP01FBFaceEyeCtr
 
         private static void SetNowMPNv(int i)
         {
+            if (i<0)
+            {
+                MyLog.LogWarning("SetNowMPNv",i);
+                return;
+            }
             var mp = SamplePatch.maids[SampleGUI.seleted].GetProp(UtillMPN.nowMPNs[i]);
             UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = mp.value;
+            UtillMPN.nowMPNmin[i] = mp.min;
+            UtillMPN.nowMPNmax[i] = mp.max;
         }
     }
 }
