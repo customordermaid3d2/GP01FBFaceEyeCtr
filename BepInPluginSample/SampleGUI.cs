@@ -69,6 +69,7 @@ namespace GP01FBFaceEyeCtr
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
             SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { SampleGUI.isGUIOn = !SampleGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
+            MaidActivePatch.selectionGrid+= UtillMPN.UpdateMPNs;
         }
 
         public void OnEnable()
@@ -158,7 +159,7 @@ namespace GP01FBFaceEyeCtr
 
                 #region 슬라이드
 
-                GUI.enabled = SamplePatch.maids[seleted] != null;
+                GUI.enabled = MaidActivePatch.maids[seleted] != null;
 
                 for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                 {
@@ -182,27 +183,27 @@ namespace GP01FBFaceEyeCtr
                             }
                             if (isAllMaid)
                             {
-                                foreach (var item in SamplePatch.maids)
+                                foreach (var item in MaidActivePatch.maids)
                                 {
                                     item?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                                 }
                             }
                             else
                             {
-                                SamplePatch.maids[seleted].SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
+                                MaidActivePatch.maids[seleted].SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                             }
                             //MyLog.LogMessage("changed", mpns[i], mpni[i]);
                         }
                         if (isAllMaid)
                         {
-                            foreach (var item in SamplePatch.maids)
+                            foreach (var item in MaidActivePatch.maids)
                             {
                                 item?.AllProcProp();
                             }
                         }
                         else
                         {
-                            SamplePatch.maids[seleted].AllProcProp();
+                            MaidActivePatch.maids[seleted].AllProcProp();
                         }
                         SceneEdit.Instance?.UpdateSliders();
                     }
@@ -218,19 +219,19 @@ namespace GP01FBFaceEyeCtr
                 GUILayout.BeginHorizontal();
 
                 isAllMaid = GUILayout.Toggle(isAllMaid, "All Maid Aplly");
-                if (GUILayout.Button("Copy All") && SamplePatch.maids[seleted] != null)
+                if (GUILayout.Button("Copy All") && MaidActivePatch.maids[seleted] != null)
                 {
                     for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                     {
                         if (UtillMPN.nowBools[i])
                         {
-                            var m = SamplePatch.maids[seleted].GetProp(UtillMPN.nowMPNs[i]);
-                            foreach (var item in SamplePatch.maids)
+                            var m = MaidActivePatch.maids[seleted].GetProp(UtillMPN.nowMPNs[i]);
+                            foreach (var item in MaidActivePatch.maids)
                             {
                                 item?.SetProp(UtillMPN.nowMPNs[i], m.value);
                             }
                         }
-                        foreach (var item in SamplePatch.maids)
+                        foreach (var item in MaidActivePatch.maids)
                         {
                             item?.AllProcProp();
                         }
@@ -239,17 +240,20 @@ namespace GP01FBFaceEyeCtr
 
                 GUILayout.EndHorizontal();
 
+
+                seleted = MaidActivePatch.SelectionGrid(seleted);
+                /*
                 GUILayout.Label("maid select");
                 // 여기는 출력된 메이드들 이름만 가져옴
                 // seleted 가 이름 위치 번호만 가져온건데
-                seleted = GUILayout.SelectionGrid(seleted, SamplePatch.maidNames, 1);
+                seleted = GUILayout.SelectionGrid(seleted, MaidActivePatch.maidNames, 1);
 
                 if (GUI.changed)
                 {
                     UtillMPN.UpdateMPNs();
                     GUI.changed = false;
                 }
-
+                */
                 #endregion
 
                 GUILayout.EndScrollView();

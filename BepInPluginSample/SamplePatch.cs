@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using COM3D2.LillyUtill;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ namespace GP01FBFaceEyeCtr
 {
     class SamplePatch
     {
+        /*
         public static Maid[] maids = new Maid[18];
         public static string[] maidNames = new string[18];
 
@@ -51,13 +53,13 @@ namespace GP01FBFaceEyeCtr
             }
             //MyLog.LogMessage("CharacterMgr.Deactivate", f_nActiveSlotNo, f_bMan);
         }
-
+        */
         [HarmonyPatch(typeof(Maid), "SetProp",typeof(MPN),typeof(int),typeof(bool))]
         [HarmonyPrefix] // CharacterMgr의 SetActive가 실행 전에 아래 메소드 작동
         public static void SetProp(Maid __instance, MPN idx, int val, bool f_bTemp )
         {
             //MyLog.LogMessage("CharacterMgr.Deactivate", __instance.status.fullNameEnStyle, idx, val);
-            if (__instance== maids[SampleGUI.seleted])
+            if (__instance== MaidActivePatch.maids[SampleGUI.seleted])
             {
                 UtillMPN.UpdateMPNs(idx);
             }
