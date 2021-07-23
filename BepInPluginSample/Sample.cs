@@ -27,10 +27,12 @@ namespace GP01FBFaceEyeCtr
 
         public static Sample sample;
 
+        public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
+
         public Sample()
         {
             sample = this;
-            MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
+            //MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
 
             UtillMPN.init();
         }
@@ -40,7 +42,7 @@ namespace GP01FBFaceEyeCtr
         /// </summary>
         public void Awake()
         {
-            MyLog.LogMessage("Awake");
+            myLog.LogMessage("Awake");
 
             // 단축키 기본값 설정
             //ShowCounter = Config.Bind("KeyboardShortcut", "KeyboardShortcut0", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
@@ -54,7 +56,7 @@ namespace GP01FBFaceEyeCtr
 
         public void OnEnable()
         {
-            MyLog.LogMessage("OnEnable");
+            myLog.LogMessage("OnEnable");
 
             SceneManager.sceneLoaded += this.OnSceneLoaded;
 
@@ -68,7 +70,7 @@ namespace GP01FBFaceEyeCtr
         /// </summary>
         public void Start()
         {
-            MyLog.LogMessage("Start");
+            myLog.LogMessage("Start");
 
             SampleGUI.Install(gameObject, Config);
 
@@ -79,7 +81,7 @@ namespace GP01FBFaceEyeCtr
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            MyLog.LogMessage("OnSceneLoaded", scene.name, scene.buildIndex);
+            myLog.LogMessage("OnSceneLoaded", scene.name, scene.buildIndex);
             //  scene.buildIndex 는 쓰지 말자 제발
             scene_name = scene.name;
         }
@@ -121,7 +123,7 @@ namespace GP01FBFaceEyeCtr
 
         public void OnDisable()
         {
-            MyLog.LogMessage("OnDisable");
+            myLog.LogMessage("OnDisable");
 
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
 
@@ -131,12 +133,12 @@ namespace GP01FBFaceEyeCtr
 
         public void Pause()
         {
-            MyLog.LogMessage("Pause");
+            myLog.LogMessage("Pause");
         }
 
         public void Resume()
         {
-            MyLog.LogMessage("Resume");
+            myLog.LogMessage("Resume");
         }
 
         /// <summary>
@@ -144,7 +146,7 @@ namespace GP01FBFaceEyeCtr
         /// </summary>
         public void OnApplicationQuit()
         {
-            MyLog.LogMessage("OnApplicationQuit");
+            myLog.LogMessage("OnApplicationQuit");
         }
 
     }

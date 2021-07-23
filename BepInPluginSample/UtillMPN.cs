@@ -178,7 +178,7 @@ namespace GP01FBFaceEyeCtr
             }
             else
             {
-                MyLog.LogWarning("UpdateMPNs", mpn);
+                Sample.myLog.LogWarning("UpdateMPNs", mpn);
             }
         }
 
@@ -195,7 +195,7 @@ namespace GP01FBFaceEyeCtr
         {
             if (i<0)
             {
-                MyLog.LogWarning("SetNowMPNv",i);
+                Sample.myLog.LogWarning("SetNowMPNv",i);
                 return;
             }
             var mp = SamplePatch.maids[SampleGUI.seleted].GetProp(UtillMPN.nowMPNs[i]);

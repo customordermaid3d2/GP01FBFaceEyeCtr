@@ -57,15 +57,14 @@ namespace GP01FBFaceEyeCtr
             if (instance == null)
             {
                 instance = parent.AddComponent<SampleGUI>();
-                MyLog.LogMessage("GameObjectMgr.Install", instance.name);
+                Sample.myLog.LogMessage("GameObjectMgr.Install", instance.name);
             }
             return instance;
         }
 
         public void Awake()
         {
-            myWindowRect = new MyWindowRect(config, MyAttribute.PLAGIN_FULL_NAME
-                );
+            myWindowRect = new MyWindowRect(config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "GP01FB");
             IsGUIOn = config.Bind("GUI", "isGUIOn", false);
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
@@ -74,7 +73,7 @@ namespace GP01FBFaceEyeCtr
 
         public void OnEnable()
         {
-            MyLog.LogMessage("OnEnable");
+            Sample.myLog.LogMessage("OnEnable");
 
             SampleGUI.myWindowRect.load();
             SceneManager.sceneLoaded += this.OnSceneLoaded;
@@ -82,7 +81,7 @@ namespace GP01FBFaceEyeCtr
 
         public void Start()
         {
-            MyLog.LogMessage("Start");
+            Sample.myLog.LogMessage("Start");
         }
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -103,7 +102,7 @@ namespace GP01FBFaceEyeCtr
             if (ShowCounter.Value.IsUp())
             {
                 isGUIOn = !isGUIOn;
-                MyLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
+                Sample.myLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
             }
         }
 
@@ -126,7 +125,7 @@ namespace GP01FBFaceEyeCtr
             GUI.enabled = true;
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label(MyAttribute.PLAGIN_NAME + " " + ShowCounter.Value.ToString(), GUILayout.Height(20));
+            GUILayout.Label(myWindowRect.windowName, GUILayout.Height(20));
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("-", GUILayout.Width(20), GUILayout.Height(20))) { IsOpen = !IsOpen; }
             if (GUILayout.Button("x", GUILayout.Width(20), GUILayout.Height(20))) { isGUIOn = false; }
@@ -266,27 +265,17 @@ namespace GP01FBFaceEyeCtr
 
         public void OnDisable()
         {
-            SampleGUI.isCoroutine = false;
+
             SampleGUI.myWindowRect?.save();
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
         }
 
-        public static bool isCoroutine = false;
-        public static int CoroutineCount = 0;
+
         public static int seleted;
         public static int seletedfolder;
         public static int seletedfolderbak;
 
 
-        private IEnumerator MyCoroutine()
-        {
-            isCoroutine = true;
-            while (isCoroutine)
-            {
-                MyLog.LogMessage("MyCoroutine ", ++CoroutineCount);
-                //yield return null;
-                yield return new WaitForSeconds(1f);
-            }
-        }
+
     }
 }
