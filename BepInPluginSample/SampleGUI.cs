@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using COM3D2.LillyUtill;
 using COM3D2API;
+using HarmonyLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,6 +51,9 @@ namespace GP01FBFaceEyeCtr
             set => IsAllMaid.Value = value;
         }
 
+        Harmony harmony;
+
+
         internal static SampleGUI Install(GameObject parent, ConfigFile config)
         {
             SampleGUI.config = config;
@@ -68,7 +72,8 @@ namespace GP01FBFaceEyeCtr
             IsGUIOn = config.Bind("GUI", "isGUIOn", false);
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
-            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { SampleGUI.isGUIOn = !SampleGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
+            //SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { SampleGUI.isGUIOn = !SampleGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
+            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { enabled = !enabled; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
             MaidActivePatch.selectionGrid+= UtillMPN.UpdateMPNs;
         }
 
@@ -78,6 +83,7 @@ namespace GP01FBFaceEyeCtr
 
             SampleGUI.myWindowRect.load();
             SceneManager.sceneLoaded += this.OnSceneLoaded;
+            harmony = Harmony.CreateAndPatchAll(typeof(SamplePatch));           
         }
 
         public void Start()
@@ -175,6 +181,7 @@ namespace GP01FBFaceEyeCtr
                 {
                     //if (SamplePatch.GetMaid(SampleGUI.seleted) != null)
                     {
+
                         for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                         {
                             if (UtillMPN.nowMPNv[i] == UtillMPN.nowMPNvb[i])
@@ -183,7 +190,7 @@ namespace GP01FBFaceEyeCtr
                             }
                             if (isAllMaid)
                             {
-                                foreach (var item in MaidActivePatch.maids)
+                                foreach (var item in MaidActivePatch.Maids2.Values)
                                 {
                                     item?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                                 }
@@ -196,7 +203,7 @@ namespace GP01FBFaceEyeCtr
                         }
                         if (isAllMaid)
                         {
-                            foreach (var item in MaidActivePatch.maids)
+                            foreach (var item in MaidActivePatch.Maids2.Values)
                             {
                                 item?.AllProcProp();
                             }
@@ -221,17 +228,18 @@ namespace GP01FBFaceEyeCtr
                 isAllMaid = GUILayout.Toggle(isAllMaid, "All Maid Aplly");
                 if (GUILayout.Button("Copy All") && MaidActivePatch.GetMaid(SampleGUI.seleted) != null)
                 {
+                    var ms = MaidActivePatch.Maids2.Values;
                     for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                     {
                         if (UtillMPN.nowBools[i])
                         {
                             var m = MaidActivePatch.GetMaid(SampleGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
-                            foreach (var item in MaidActivePatch.maids)
+                            foreach (var item in ms)
                             {
                                 item?.SetProp(UtillMPN.nowMPNs[i], m.value);
                             }
                         }
-                        foreach (var item in MaidActivePatch.maids)
+                        foreach (var item in ms)
                         {
                             item?.AllProcProp();
                         }
@@ -272,6 +280,7 @@ namespace GP01FBFaceEyeCtr
 
             SampleGUI.myWindowRect?.save();
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
+            harmony.UnpatchSelf();
         }
 
 

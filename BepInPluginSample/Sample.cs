@@ -23,7 +23,7 @@ namespace GP01FBFaceEyeCtr
         // 단축키 설정파일로 연동
         //private ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter;
 
-        Harmony harmony;
+        //Harmony harmony;
 
         public static Sample sample;
 
@@ -37,6 +37,7 @@ namespace GP01FBFaceEyeCtr
             UtillMPN.init();
         }
 
+        /*
         /// <summary>
         ///  게임 실행시 한번만 실행됨
         /// </summary>
@@ -48,11 +49,11 @@ namespace GP01FBFaceEyeCtr
             //ShowCounter = Config.Bind("KeyboardShortcut", "KeyboardShortcut0", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
 
             //SampleConfig.Install(MyLog.log);
-
+            
             // 기어 메뉴 추가. 이 플러그인 기능 자체를 멈추려면 enabled 를 꺽어야함. 그러면 OnEnable(), OnDisable() 이 작동함
         }
-
-
+        */
+        /*
 
         public void OnEnable()
         {
@@ -61,10 +62,10 @@ namespace GP01FBFaceEyeCtr
             SceneManager.sceneLoaded += this.OnSceneLoaded;
 
             // 하모니 패치
-            harmony = Harmony.CreateAndPatchAll(typeof(SamplePatch));
+            //harmony = Harmony.CreateAndPatchAll(typeof(SamplePatch));
 
         }
-
+        */
         /// <summary>
         /// 게임 실행시 한번만 실행됨
         /// </summary>
@@ -77,6 +78,7 @@ namespace GP01FBFaceEyeCtr
             //SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { enabled = !enabled; }), MyAttribute.PLAGIN_NAME, MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
         }
 
+        /*
         public string scene_name = string.Empty;
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -85,12 +87,12 @@ namespace GP01FBFaceEyeCtr
             //  scene.buildIndex 는 쓰지 말자 제발
             scene_name = scene.name;
         }
-
+        */
+        /*
         public void FixedUpdate()
         {
 
         }
-
         public void Update()
         {
             //if (ShowCounter.Value.IsDown())
@@ -119,18 +121,20 @@ namespace GP01FBFaceEyeCtr
           
         }
 
+        */
 
-
+        /*
         public void OnDisable()
         {
             myLog.LogMessage("OnDisable");
 
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
 
-            harmony.UnpatchSelf();// ==harmony.UnpatchAll(harmony.Id);
+            //harmony.UnpatchSelf();// ==harmony.UnpatchAll(harmony.Id);
             //harmony.UnpatchAll(); // 정대 사용 금지. 다름 플러그인이 패치한것까지 다 풀려버림
         }
-
+        */
+        /*
         public void Pause()
         {
             myLog.LogMessage("Pause");
@@ -140,7 +144,8 @@ namespace GP01FBFaceEyeCtr
         {
             myLog.LogMessage("Resume");
         }
-
+        */
+        /*
         /// <summary>
         /// 게임 X 버튼 눌렀을때 반응
         /// </summary>
@@ -148,6 +153,6 @@ namespace GP01FBFaceEyeCtr
         {
             myLog.LogMessage("OnApplicationQuit");
         }
-
+        */
     }
 }

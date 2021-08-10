@@ -184,7 +184,7 @@ namespace GP01FBFaceEyeCtr
 
         public static void UpdateMPNs()
         {
-            if (MaidActivePatch.maids[SampleGUI.seleted] != null)
+            if (MaidActivePatch.GetMaid(SampleGUI.seleted) != null)
                 for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
             {
                 SetNowMPNv(i);
@@ -198,7 +198,7 @@ namespace GP01FBFaceEyeCtr
                 Sample.myLog.LogWarning("SetNowMPNv",i);
                 return;
             }
-            var mp = MaidActivePatch.maids[SampleGUI.seleted].GetProp(UtillMPN.nowMPNs[i]);
+            var mp = MaidActivePatch.GetMaid(SampleGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
             UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = mp.value;
             UtillMPN.nowMPNmin[i] = mp.min;
             UtillMPN.nowMPNmax[i] = mp.max;
