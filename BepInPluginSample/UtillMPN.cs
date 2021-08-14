@@ -151,7 +151,7 @@ namespace GP01FBFaceEyeCtr
             foldersNm=Enum.GetNames(typeof(folder));
 
             SetFolderMPNs(folder.Mabuta);
-            SampleGUI.seletedfolderbak = SampleGUI.seletedfolder = (int)folder.Mabuta;
+            GP01FBFaceEyeCtrGUI.seletedfolderbak = GP01FBFaceEyeCtrGUI.seletedfolder = (int)folder.Mabuta;
         }
 
         internal static void SetFolderMPNs(folder nm)
@@ -178,13 +178,13 @@ namespace GP01FBFaceEyeCtr
             }
             else
             {
-                Sample.myLog.LogWarning("UpdateMPNs", mpn);
+                GP01FBFaceEyeCtr.myLog.LogWarning("UpdateMPNs", mpn);
             }
         }
 
         public static void UpdateMPNs()
         {
-            if (MaidActivePatch.GetMaid(SampleGUI.seleted) != null)
+            if (MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null)
                 for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
             {
                 SetNowMPNv(i);
@@ -195,10 +195,10 @@ namespace GP01FBFaceEyeCtr
         {
             if (i<0)
             {
-                Sample.myLog.LogWarning("SetNowMPNv",i);
+                GP01FBFaceEyeCtr.myLog.LogWarning("SetNowMPNv",i);
                 return;
             }
-            var mp = MaidActivePatch.GetMaid(SampleGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
+            var mp = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
             UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = mp.value;
             UtillMPN.nowMPNmin[i] = mp.min;
             UtillMPN.nowMPNmax[i] = mp.max;

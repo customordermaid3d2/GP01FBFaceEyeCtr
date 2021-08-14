@@ -13,13 +13,15 @@ using UnityEngine.SceneManagement;
 
 namespace GP01FBFaceEyeCtr
 {
-    class SampleGUI : MonoBehaviour
+    class GP01FBFaceEyeCtrGUI : MonoBehaviour
     {
-        public static SampleGUI instance;
+        public static ConfigEntry<bool> isEnabled;
+
+        public static GP01FBFaceEyeCtrGUI instance;
 
         private static ConfigFile config;
 
-        private static ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter;
+        public static ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter;
 
         private static int windowId = new System.Random().Next();
 
@@ -54,14 +56,14 @@ namespace GP01FBFaceEyeCtr
         Harmony harmony;
 
 
-        internal static SampleGUI Install(GameObject parent, ConfigFile config)
+        internal static GP01FBFaceEyeCtrGUI Install(GameObject parent, ConfigFile config)
         {
-            SampleGUI.config = config;
-            instance = parent.GetComponent<SampleGUI>();
+            GP01FBFaceEyeCtrGUI.config = config;
+            instance = parent.GetComponent<GP01FBFaceEyeCtrGUI>();
             if (instance == null)
             {
-                instance = parent.AddComponent<SampleGUI>();
-                Sample.myLog.LogMessage("GameObjectMgr.Install", instance.name);
+                instance = parent.AddComponent<GP01FBFaceEyeCtrGUI>();
+                GP01FBFaceEyeCtr.myLog.LogMessage("GameObjectMgr.Install", instance.name);
             }
             return instance;
         }
@@ -69,31 +71,45 @@ namespace GP01FBFaceEyeCtr
         public void Awake()
         {
             myWindowRect = new MyWindowRect(config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "GP01FB");
+            isEnabled = config.Bind("Plugin", "isEnabled", true);
+            isEnabled.SettingChanged += isEnabledChg;
             IsGUIOn = config.Bind("GUI", "isGUIOn", false);
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
-            ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
-            //SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { SampleGUI.isGUIOn = !SampleGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
-            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { enabled = !enabled; }), MyAttribute.PLAGIN_NAME + " : " + ShowCounter.Value.ToString(), MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
+            ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));            
+            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { GP01FBFaceEyeCtrGUI.isGUIOn = !GP01FBFaceEyeCtrGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(global::GP01FBFaceEyeCtr.Properties.Resources.icon));
+            
             MaidActivePatch.selectionGrid+= UtillMPN.UpdateMPNs;
+        }
+
+        private void isEnabledChg(object sender, EventArgs e)
+        {
+            enabled = (bool)((SettingChangedEventArgs)e).ChangedSetting.BoxedValue ;
+            GP01FBFaceEyeCtr.myLog.LogMessage("isEnabledChg"
+                ,((SettingChangedEventArgs)e).ChangedSetting.DefaultValue                
+                ,((SettingChangedEventArgs)e).ChangedSetting.BoxedValue                
+                ,((SettingChangedEventArgs)e).ChangedSetting.SettingType                
+                );
         }
 
         public void OnEnable()
         {
-            Sample.myLog.LogMessage("OnEnable");
+            GP01FBFaceEyeCtr.myLog.LogMessage("OnEnable");
 
-            SampleGUI.myWindowRect.load();
+            GP01FBFaceEyeCtrGUI.myWindowRect.load();
             SceneManager.sceneLoaded += this.OnSceneLoaded;
-            harmony = Harmony.CreateAndPatchAll(typeof(SamplePatch));           
+            harmony = Harmony.CreateAndPatchAll(typeof(GP01FBFaceEyeCtrPatch));           
         }
 
+        /*
         public void Start()
         {
             Sample.myLog.LogMessage("Start");
         }
+        */
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            SampleGUI.myWindowRect.save();
+            GP01FBFaceEyeCtrGUI.myWindowRect.save();
         }
 
         private void Update()
@@ -109,7 +125,7 @@ namespace GP01FBFaceEyeCtr
             if (ShowCounter.Value.IsUp())
             {
                 isGUIOn = !isGUIOn;
-                Sample.myLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
+                GP01FBFaceEyeCtr.myLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
             }
         }
 
@@ -165,7 +181,7 @@ namespace GP01FBFaceEyeCtr
 
                 #region 슬라이드
 
-                GUI.enabled = MaidActivePatch.GetMaid(SampleGUI.seleted) != null;
+                GUI.enabled = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null;
 
                 for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                 {
@@ -197,7 +213,7 @@ namespace GP01FBFaceEyeCtr
                             }
                             else
                             {
-                                MaidActivePatch.GetMaid(SampleGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
+                                MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                             }
                             //MyLog.LogMessage("changed", mpns[i], mpni[i]);
                         }
@@ -210,7 +226,7 @@ namespace GP01FBFaceEyeCtr
                         }
                         else
                         {
-                            MaidActivePatch.GetMaid(SampleGUI.seleted)?.AllProcProp();
+                            MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.AllProcProp();
                         }
                         SceneEdit.Instance?.UpdateSliders();
                     }
@@ -226,14 +242,14 @@ namespace GP01FBFaceEyeCtr
                 GUILayout.BeginHorizontal();
 
                 isAllMaid = GUILayout.Toggle(isAllMaid, "All Maid Aplly");
-                if (GUILayout.Button("Copy All") && MaidActivePatch.GetMaid(SampleGUI.seleted) != null)
+                if (GUILayout.Button("Copy All") && MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null)
                 {
                     var ms = MaidActivePatch.Maids2.Values;
                     for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                     {
                         if (UtillMPN.nowBools[i])
                         {
-                            var m = MaidActivePatch.GetMaid(SampleGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
+                            var m = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
                             foreach (var item in ms)
                             {
                                 item?.SetProp(UtillMPN.nowMPNs[i], m.value);
@@ -278,7 +294,7 @@ namespace GP01FBFaceEyeCtr
         public void OnDisable()
         {
 
-            SampleGUI.myWindowRect?.save();
+            GP01FBFaceEyeCtrGUI.myWindowRect?.save();
             SceneManager.sceneLoaded -= this.OnSceneLoaded;
             harmony.UnpatchSelf();
         }

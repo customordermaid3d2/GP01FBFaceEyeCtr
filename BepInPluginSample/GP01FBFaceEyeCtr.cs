@@ -15,21 +15,28 @@ using UnityEngine.SceneManagement;
 
 namespace GP01FBFaceEyeCtr
 {
+    class MyAttribute
+    {
+        public const string PLAGIN_NAME = "GP01FBFaceEyeCtr";
+        public const string PLAGIN_VERSION = "21.8.14";
+        public const string PLAGIN_FULL_NAME = "COM3D2.GP01FBFaceEyeCtr.Plugin";
+    }
+
     [BepInPlugin(MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_VERSION)]// 버전 규칙 잇음. 반드시 2~4개의 숫자구성으로 해야함. 미준수시 못읽어들임
     //[BepInPlugin("COM3D2.Sample.Plugin", "COM3D2.Sample.Plugin", "21.6.6")]// 버전 규칙 잇음. 반드시 2~4개의 숫자구성으로 해야함. 미준수시 못읽어들임
     [BepInProcess("COM3D2x64.exe")]
-    public class Sample : BaseUnityPlugin
+    public class GP01FBFaceEyeCtr : BaseUnityPlugin
     {
         // 단축키 설정파일로 연동
         //private ConfigEntry<BepInEx.Configuration.KeyboardShortcut> ShowCounter;
 
         //Harmony harmony;
 
-        public static Sample sample;
+        public static GP01FBFaceEyeCtr sample;
 
         public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
 
-        public Sample()
+        public GP01FBFaceEyeCtr()
         {
             sample = this;
             //MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
@@ -38,6 +45,7 @@ namespace GP01FBFaceEyeCtr
         }
 
         /*
+        */
         /// <summary>
         ///  게임 실행시 한번만 실행됨
         /// </summary>
@@ -51,8 +59,8 @@ namespace GP01FBFaceEyeCtr
             //SampleConfig.Install(MyLog.log);
             
             // 기어 메뉴 추가. 이 플러그인 기능 자체를 멈추려면 enabled 를 꺽어야함. 그러면 OnEnable(), OnDisable() 이 작동함
+
         }
-        */
         /*
 
         public void OnEnable()
@@ -73,9 +81,10 @@ namespace GP01FBFaceEyeCtr
         {
             myLog.LogMessage("Start");
 
-            SampleGUI.Install(gameObject, Config);
+            GP01FBFaceEyeCtrGUI.Install(gameObject, Config);
 
             //SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { enabled = !enabled; }), MyAttribute.PLAGIN_NAME, MyUtill.ExtractResource(GP01FBFaceEyeCtr.Properties.Resources.icon));
+            
         }
 
         /*
