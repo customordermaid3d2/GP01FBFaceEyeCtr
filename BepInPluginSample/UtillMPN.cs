@@ -85,7 +85,7 @@ namespace GP01FBFaceEyeCtr
                  MPN.EarScl ,
                  MPN.EarRot
             });
-            
+
             folderMPNs.Add(folder.Mabuta, new MPN[]
             {
                 // 속눈썹 위
@@ -102,33 +102,33 @@ namespace GP01FBFaceEyeCtr
 
             folderMPNs.Add(folder.body, new MPN[]
             {
-                MPN.DouPer, 
+                MPN.DouPer,
                 MPN.sintyou
             });
 
             folderMPNs.Add(folder.mune, new MPN[]
             {
-                MPN.MuneL, 
-                MPN.MuneTare, 
-                MPN.MuneUpDown, 
-                MPN.MuneYori, 
+                MPN.MuneL,
+                MPN.MuneTare,
+                MPN.MuneUpDown,
+                MPN.MuneYori,
                 MPN.MuneYawaraka
             });
-            
+
             folderMPNs.Add(folder.bodyUp, new MPN[]
             {
-                MPN.west, 
-                MPN.Hara, 
-                MPN.kata, 
-                MPN.ArmL, 
-                MPN.UdeScl, 
-                MPN.KubiScl 
+                MPN.west,
+                MPN.Hara,
+                MPN.kata,
+                MPN.ArmL,
+                MPN.UdeScl,
+                MPN.KubiScl
             });
-                        
+
             folderMPNs.Add(folder.bodyDown, new MPN[]
             {
-                MPN.koshi, 
-                MPN.RegFat, 
+                MPN.koshi,
+                MPN.RegFat,
                 MPN.RegMeet
             });
 
@@ -148,7 +148,7 @@ namespace GP01FBFaceEyeCtr
                 }
             }
 
-            foldersNm=Enum.GetNames(typeof(folder));
+            foldersNm = Enum.GetNames(typeof(folder));
 
             SetFolderMPNs(folder.Mabuta);
             GP01FBFaceEyeCtrGUI.seletedfolderbak = GP01FBFaceEyeCtrGUI.seletedfolder = (int)folder.Mabuta;
@@ -158,7 +158,7 @@ namespace GP01FBFaceEyeCtr
         {
             nowfolder = nm;
             nowMPNs = folderMPNs[nm];
-            nowMPNl= folderMPNl[nm];
+            nowMPNl = folderMPNl[nm];
             nowMPNv = folderMPNv[nm];
             nowMPNvb = folderMPNb[nm];
             nowMPNmin = folderMPNmin[nm];
@@ -171,10 +171,10 @@ namespace GP01FBFaceEyeCtr
         {
             if (mpnFolder.ContainsKey(mpn))
             {
-            if (mpnFolder[mpn] == nowfolder)
-            {                
-                SetNowMPNv(folderMPNl[nowfolder].IndexOf(mpn));
-            }
+                if (mpnFolder[mpn] == nowfolder)
+                {
+                    SetNowMPNv(folderMPNl[nowfolder].IndexOf(mpn));
+                }
             }
             else
             {
@@ -184,18 +184,26 @@ namespace GP01FBFaceEyeCtr
 
         public static void UpdateMPNs()
         {
-            if (MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null)
-                for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
-            {
-                SetNowMPNv(i);
-            }
+            UpdateMPNs(GP01FBFaceEyeCtrGUI.seleted);
+        }
+
+
+        public static void UpdateMPNs(int seleted)
+        {
+            Maid maid = MaidActivePatch.GetMaid(seleted);
+            if (maid != null)
+                if (maid == MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
+                    for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
+                    {
+                        SetNowMPNv(i);
+                    }
         }
 
         private static void SetNowMPNv(int i)
         {
-            if (i<0)
+            if (i < 0)
             {
-                GP01FBFaceEyeCtr.myLog.LogWarning("SetNowMPNv",i);
+                GP01FBFaceEyeCtr.myLog.LogWarning("SetNowMPNv", i);
                 return;
             }
             var mp = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);

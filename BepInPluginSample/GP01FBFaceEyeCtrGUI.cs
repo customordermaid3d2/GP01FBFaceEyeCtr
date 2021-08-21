@@ -76,9 +76,9 @@ namespace GP01FBFaceEyeCtr
             IsGUIOn = config.Bind("GUI", "isGUIOn", false);
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));            
-            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { GP01FBFaceEyeCtrGUI.isGUIOn = !GP01FBFaceEyeCtrGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(global::GP01FBFaceEyeCtr.Properties.Resources.icon));
+            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { GP01FBFaceEyeCtrGUI.isGUIOn = !GP01FBFaceEyeCtrGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(Properties.Resources.icon));
             
-            MaidActivePatch.selectionGrid+= UtillMPN.UpdateMPNs;
+            MaidActivePatch.selectionGrid2+= UtillMPN.UpdateMPNs;
         }
 
         private void isEnabledChg(object sender, EventArgs e)

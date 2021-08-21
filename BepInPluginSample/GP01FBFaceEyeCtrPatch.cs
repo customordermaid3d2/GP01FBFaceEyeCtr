@@ -58,7 +58,7 @@ namespace GP01FBFaceEyeCtr
         [HarmonyPrefix] // CharacterMgr의 SetActive가 실행 전에 아래 메소드 작동
         public static void SetProp(Maid __instance, MPN idx, int val, bool f_bTemp )
         {
-            GP01FBFaceEyeCtr.myLog.LogMessage("Maid.SetProp", __instance.status.fullNameEnStyle, idx, val, GP01FBFaceEyeCtrGUI.seleted);
+            //GP01FBFaceEyeCtr.myLog.LogMessage("Maid.SetProp", __instance.status.fullNameEnStyle, idx, val, GP01FBFaceEyeCtrGUI.seleted);
             if (__instance== MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
             {
                 UtillMPN.UpdateMPNs(idx);
