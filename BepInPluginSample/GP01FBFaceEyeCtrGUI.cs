@@ -78,7 +78,7 @@ namespace GP01FBFaceEyeCtr
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));            
             SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { GP01FBFaceEyeCtrGUI.isGUIOn = !GP01FBFaceEyeCtrGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(Properties.Resources.icon));
             
-            MaidActivePatch.selectionGrid2+= UtillMPN.UpdateMPNs;
+            //MaidActivePatch.selectionGrid2+= UtillMPN.UpdateMPNs;
         }
 
         private void isEnabledChg(object sender, EventArgs e)
@@ -265,18 +265,18 @@ namespace GP01FBFaceEyeCtr
                 GUILayout.EndHorizontal();
 
 
-                seleted = MaidActivePatch.SelectionGrid(seleted,3, 265 ,false);
-                /*
+                //seleted = MaidActivePatch.SelectionGrid(seleted,3, 265 ,false);
                 GUILayout.Label("maid select");
                 // 여기는 출력된 메이드들 이름만 가져옴
                 // seleted 가 이름 위치 번호만 가져온건데
-                seleted = GUILayout.SelectionGrid(seleted, MaidActivePatch.maidNames, 1);
+                seleted = MaidActivePatch.SelectionGrid3(seleted);
 
                 if (GUI.changed)
                 {
                     UtillMPN.UpdateMPNs();
                     GUI.changed = false;
                 }
+                /*
                 */
                 #endregion
 
