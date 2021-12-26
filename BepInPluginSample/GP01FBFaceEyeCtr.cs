@@ -32,13 +32,13 @@ namespace GP01FBFaceEyeCtr
 
         //Harmony harmony;
 
-        public static GP01FBFaceEyeCtr sample;
+        public static GP01FBFaceEyeCtr instance;
 
         public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
 
         public GP01FBFaceEyeCtr()
         {
-            sample = this;
+            instance = this;
             //MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
 
             UtillMPN.init();
@@ -62,18 +62,18 @@ namespace GP01FBFaceEyeCtr
 
         }
         /*
-
+         */
         public void OnEnable()
         {
             myLog.LogMessage("OnEnable");
 
-            SceneManager.sceneLoaded += this.OnSceneLoaded;
+            //SceneManager.sceneLoaded += this.OnSceneLoaded;
 
             // 하모니 패치
             //harmony = Harmony.CreateAndPatchAll(typeof(SamplePatch));
 
         }
-        */
+       
         /// <summary>
         /// 게임 실행시 한번만 실행됨
         /// </summary>
@@ -132,16 +132,16 @@ namespace GP01FBFaceEyeCtr
 
         */
 
-        /*
+  
         public void OnDisable()
         {
             myLog.LogMessage("OnDisable");
 
-            SceneManager.sceneLoaded -= this.OnSceneLoaded;
+           // SceneManager.sceneLoaded -= this.OnSceneLoaded;
 
             //harmony.UnpatchSelf();// ==harmony.UnpatchAll(harmony.Id);
             //harmony.UnpatchAll(); // 정대 사용 금지. 다름 플러그인이 패치한것까지 다 풀려버림
-        }
+        }      /*
         */
         /*
         public void Pause()

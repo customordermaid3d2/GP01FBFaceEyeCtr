@@ -96,7 +96,7 @@ namespace GP01FBFaceEyeCtr
             GP01FBFaceEyeCtr.myLog.LogMessage("OnEnable");
 
             GP01FBFaceEyeCtrGUI.myWindowRect.load();
-            SceneManager.sceneLoaded += this.OnSceneLoaded;
+            //SceneManager.sceneLoaded += this.OnSceneLoaded;
             harmony = Harmony.CreateAndPatchAll(typeof(GP01FBFaceEyeCtrPatch));           
         }
 
@@ -107,11 +107,12 @@ namespace GP01FBFaceEyeCtr
         }
         */
 
+        /*
         public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             GP01FBFaceEyeCtrGUI.myWindowRect.save();
         }
-
+        */
         private void Update()
         {
             //if (ShowCounter.Value.IsDown())
@@ -188,6 +189,10 @@ namespace GP01FBFaceEyeCtr
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(UtillMPN.nowMPNnm[i]);
                     GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Rnd"))
+                    {
+                        MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = UtillMPN.nowMPNvb[i] = UnityEngine.Random.Range(UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i])));
+                    }
                     UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
                     GUILayout.EndHorizontal();
                     UtillMPN.nowMPNvb[i] = GUILayout.HorizontalSlider(UtillMPN.nowMPNv[i], UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i]);
@@ -294,8 +299,8 @@ namespace GP01FBFaceEyeCtr
         public void OnDisable()
         {
 
-            GP01FBFaceEyeCtrGUI.myWindowRect?.save();
-            SceneManager.sceneLoaded -= this.OnSceneLoaded;
+            //GP01FBFaceEyeCtrGUI.myWindowRect?.save();
+            //SceneManager.sceneLoaded -= this.OnSceneLoaded;
             harmony.UnpatchSelf();
         }
 
