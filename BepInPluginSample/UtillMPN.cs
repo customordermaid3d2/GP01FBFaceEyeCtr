@@ -190,16 +190,19 @@ namespace GP01FBFaceEyeCtr
 
         public static void UpdateMPNs(int seleted)
         {
-            Maid maid = MaidActivePatch.GetMaid(seleted);
-            if (maid != null)
-                if (maid == MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
-                    for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
-                    {
-                        SetNowMPNv(i);
-                    }
+            if (GP01FBFaceEyeCtrGUI.seleted== seleted)
+            {
+                Maid maid = MaidActivePatch.GetMaid(seleted);
+                if (maid != null)
+                    //if (maid == MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
+                        for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
+                        {
+                            SetNowMPNv(i);
+                        }
+            }
         }
 
-        private static void SetNowMPNv(int i)
+        public static void SetNowMPNv(int i)
         {
             if (i < 0)
             {

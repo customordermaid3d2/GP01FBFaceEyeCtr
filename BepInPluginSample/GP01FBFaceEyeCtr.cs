@@ -18,7 +18,7 @@ namespace GP01FBFaceEyeCtr
     class MyAttribute
     {
         public const string PLAGIN_NAME = "GP01FBFaceEyeCtr";
-        public const string PLAGIN_VERSION = "21.8.14";
+        public const string PLAGIN_VERSION = "22.01.20.15";
         public const string PLAGIN_FULL_NAME = "COM3D2.GP01FBFaceEyeCtr.Plugin";
     }
 
@@ -51,8 +51,8 @@ namespace GP01FBFaceEyeCtr
         /// </summary>
         public void Awake()
         {
-            myLog.LogMessage("Awake");
-
+            myLog.LogMessage("Awake https://github.com/customordermaid3d2/GP01FBFaceEyeCtr");
+            
             // 단축키 기본값 설정
             //ShowCounter = Config.Bind("KeyboardShortcut", "KeyboardShortcut0", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
 

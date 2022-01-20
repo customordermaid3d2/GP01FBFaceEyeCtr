@@ -63,7 +63,7 @@ namespace GP01FBFaceEyeCtr
             if (instance == null)
             {
                 instance = parent.AddComponent<GP01FBFaceEyeCtrGUI>();
-                GP01FBFaceEyeCtr.myLog.LogMessage("GameObjectMgr.Install", instance.name);
+                GP01FBFaceEyeCtr.myLog.LogMessage("GP01FBFaceEyeCtrGUI.Install", instance.name);
             }
             return instance;
         }
@@ -77,8 +77,14 @@ namespace GP01FBFaceEyeCtr
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
             ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));            
             SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { GP01FBFaceEyeCtrGUI.isGUIOn = !GP01FBFaceEyeCtrGUI.isGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(Properties.Resources.icon));
-            
+
+            MaidActivePatch.setActiveMaid2 += MaidActivePatch_setActiveMaid;
             //MaidActivePatch.selectionGrid2+= UtillMPN.UpdateMPNs;
+        }
+
+        private void MaidActivePatch_setActiveMaid(int maid)
+        {
+            UtillMPN.UpdateMPNs(maid);
         }
 
         private void isEnabledChg(object sender, EventArgs e)
@@ -191,7 +197,8 @@ namespace GP01FBFaceEyeCtr
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Rnd"))
                     {
-                        MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = UtillMPN.nowMPNvb[i] = UnityEngine.Random.Range(UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i])));
+                        MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(  UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i]=UnityEngine.Random.Range(UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i])));
+                        UtillMPN.SetNowMPNv(i);
                     }
                     UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
                     GUILayout.EndHorizontal();
