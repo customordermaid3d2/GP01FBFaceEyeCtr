@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using COM3D25.LillyUtill;
+using COM3D2.LillyUtill;
 using COM3D2API;
 using HarmonyLib;
 using Newtonsoft.Json;
@@ -13,7 +13,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace COM3D25.GP01FBFaceEyeCtr
+namespace COM3D2.GP01FBFaceEyeCtr
 {
     class MyAttribute
     {

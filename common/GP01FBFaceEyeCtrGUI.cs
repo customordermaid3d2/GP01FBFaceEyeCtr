@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using COM3D25.LillyUtill;
+using COM3D2.LillyUtill;
 using COM3D2API;
 using HarmonyLib;
 using System;
@@ -11,7 +11,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace COM3D25.GP01FBFaceEyeCtr
+namespace COM3D2.GP01FBFaceEyeCtr
 {
     class GP01FBFaceEyeCtrGUI : MonoBehaviour
     {
@@ -108,7 +108,7 @@ namespace COM3D25.GP01FBFaceEyeCtr
         public void Start()
         {
             GP01FBFaceEyeCtr.myLog.LogMessage("Start");
-            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(COM3D25.GP01FBFaceEyeCtr.Properties.Resources.icon));
+            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(COM3D2.GP01FBFaceEyeCtr.Properties.Resources.icon));
 
         }
         /*
