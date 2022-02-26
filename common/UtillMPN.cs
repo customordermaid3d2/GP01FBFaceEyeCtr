@@ -1,4 +1,5 @@
-﻿using COM3D2.LillyUtill;
+﻿
+using LillyUtill.MyMaidActive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -178,7 +179,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
             }
             else
             {
-                GP01FBFaceEyeCtr.myLog.LogWarning("UpdateMPNs", mpn);
+                GP01FBFaceEyeCtr.myLog.LogWarning($"UpdateMPNs {mpn}");
             }
         }
 
@@ -192,7 +193,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
         {
             if (GP01FBFaceEyeCtrGUI.seleted== seleted)
             {
-                Maid maid = MaidActivePatch.GetMaid(seleted);
+                Maid maid = MaidActiveUtill.GetMaid(seleted);
                 if (maid != null)
                     //if (maid == MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
                         for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
@@ -206,10 +207,10 @@ namespace COM3D2.GP01FBFaceEyeCtr
         {
             if (i < 0)
             {
-                GP01FBFaceEyeCtr.myLog.LogWarning("SetNowMPNv", i);
+                GP01FBFaceEyeCtr.myLog.LogWarning($"SetNowMPNv {i}");
                 return;
             }
-            var mp = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
+            var mp = MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
             UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i] = mp.value;
             UtillMPN.nowMPNmin[i] = mp.min;
             UtillMPN.nowMPNmax[i] = mp.max;

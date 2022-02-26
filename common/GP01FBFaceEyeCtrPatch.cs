@@ -1,5 +1,6 @@
-﻿using COM3D2.LillyUtill;
+﻿
 using HarmonyLib;
+using LillyUtill.MyMaidActive;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
         public static void SetProp(Maid __instance, MPN idx, int val, bool f_bTemp )
         {
             //GP01FBFaceEyeCtr.myLog.LogMessage("Maid.SetProp", __instance.status.fullNameEnStyle, idx, val, GP01FBFaceEyeCtrGUI.seleted);
-            if (__instance== MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
+            if (__instance== MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted))
             {
                 UtillMPN.UpdateMPNs(idx);
             }

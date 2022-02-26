@@ -1,17 +1,5 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using COM3D2.LillyUtill;
-using COM3D2API;
-using HarmonyLib;
-using Newtonsoft.Json;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using BepInEx.Logging;
 
 namespace COM3D2.GP01FBFaceEyeCtr
 {
@@ -34,10 +22,12 @@ namespace COM3D2.GP01FBFaceEyeCtr
 
         public static GP01FBFaceEyeCtr instance;
 
-        public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
+//        public static MyLog myLog = new MyLog(MyAttribute.PLAGIN_NAME);
+        public static ManualLogSource myLog;
 
         public GP01FBFaceEyeCtr()
         {
+            myLog = Logger;
             instance = this;
             //MyLog.log = BepInEx.Logging.Logger.CreateLogSource(MyAttribute.PLAGIN_NAME);
 

@@ -1,15 +1,13 @@
-﻿using BepInEx;
-using BepInEx.Configuration;
-using COM3D2.LillyUtill;
+﻿using BepInEx.Configuration;
 using COM3D2API;
 using HarmonyLib;
+using LillyUtill.MyMaidActive;
+using LillyUtill.MyWindowRect;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace COM3D2.GP01FBFaceEyeCtr
 {
@@ -28,7 +26,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
         private static Vector2 scrollPosition;
 
         // 위치 저장용 테스트 json
-        public static MyWindowRect myWindowRect;
+        public static WindowRectUtill myWindowRect;
         /*
         public static bool IsOpen
         {
@@ -63,21 +61,21 @@ namespace COM3D2.GP01FBFaceEyeCtr
             if (instance == null)
             {
                 instance = parent.AddComponent<GP01FBFaceEyeCtrGUI>();
-                GP01FBFaceEyeCtr.myLog.LogMessage("GP01FBFaceEyeCtrGUI.Install", instance.name);
+                //GP01FBFaceEyeCtr.myLog.LogMessage("GP01FBFaceEyeCtrGUI.Install", instance.name);
             }
             return instance;
         }
 
         public void Awake()
         {
-            myWindowRect = new MyWindowRect(config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "GP01FB");
+            myWindowRect = new WindowRectUtill(config, MyAttribute.PLAGIN_FULL_NAME, MyAttribute.PLAGIN_NAME, "GP");
             isEnabled = config.Bind("Plugin", "isEnabled", true);
             isEnabled.SettingChanged += isEnabledChg;
             //IsGUIOn = config.Bind("GUI", "isGUIOn", false);
             IsAllMaid = config.Bind("GUI", "IsAllMaid", false);
-            ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));            
-            
-            MaidActivePatch.setActiveMaid2 += MaidActivePatch_setActiveMaid;
+            ShowCounter = config.Bind("GUI", "isGUIOnKey", new BepInEx.Configuration.KeyboardShortcut(KeyCode.Alpha9, KeyCode.LeftControl));
+
+            MaidActiveUtill.setActiveMaidNum += MaidActivePatch_setActiveMaid;
             //MaidActivePatch.selectionGrid2+= UtillMPN.UpdateMPNs;
         }
 
@@ -89,28 +87,37 @@ namespace COM3D2.GP01FBFaceEyeCtr
         private void isEnabledChg(object sender, EventArgs e)
         {
             enabled = (bool)((SettingChangedEventArgs)e).ChangedSetting.BoxedValue ;
-            GP01FBFaceEyeCtr.myLog.LogMessage("isEnabledChg"
-                ,((SettingChangedEventArgs)e).ChangedSetting.DefaultValue                
-                ,((SettingChangedEventArgs)e).ChangedSetting.BoxedValue                
-                ,((SettingChangedEventArgs)e).ChangedSetting.SettingType                
-                );
+            //GP01FBFaceEyeCtr.myLog.LogMessage("isEnabledChg"
+            //    ,((SettingChangedEventArgs)e).ChangedSetting.DefaultValue                
+            //    ,((SettingChangedEventArgs)e).ChangedSetting.BoxedValue                
+            //    ,((SettingChangedEventArgs)e).ChangedSetting.SettingType                
+            //    );
         }
 
         public void OnEnable()
         {
             GP01FBFaceEyeCtr.myLog.LogMessage("OnEnable");
-
-            GP01FBFaceEyeCtrGUI.myWindowRect.load();
-            //SceneManager.sceneLoaded += this.OnSceneLoaded;
+                       
+            
             harmony = Harmony.CreateAndPatchAll(typeof(GP01FBFaceEyeCtrPatch));           
         }
 
         public void Start()
         {
             GP01FBFaceEyeCtr.myLog.LogMessage("Start");
-            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), MyUtill.ExtractResource(COM3D2.GP01FBFaceEyeCtr.Properties.Resources.icon));
+            SystemShortcutAPI.AddButton(MyAttribute.PLAGIN_FULL_NAME, new Action(delegate () { myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn; }), MyAttribute.PLAGIN_NAME + " : " + GP01FBFaceEyeCtrGUI.ShowCounter.Value.ToString(), ExtractResource(COM3D2.GP01FBFaceEyeCtr.Properties.Resources.icon));
 
         }
+
+        public static byte[] ExtractResource(Bitmap image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, ImageFormat.Png);
+                return ms.ToArray();
+            }
+        }
+
         /*
         */
 
@@ -133,7 +140,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
             if (ShowCounter.Value.IsUp())
             {
                 myWindowRect.IsGUIOn = !myWindowRect.IsGUIOn;
-                GP01FBFaceEyeCtr.myLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
+                //GP01FBFaceEyeCtr.myLog.LogMessage("IsUp", ShowCounter.Value.Modifiers, ShowCounter.Value.MainKey);
             }
         }
 
@@ -189,7 +196,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
 
                 #region 슬라이드
 
-                GUI.enabled = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null;
+                GUI.enabled = MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null;
 
                 for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                 {
@@ -198,7 +205,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
                     GUILayout.FlexibleSpace();
                     if (GUILayout.Button("Rnd"))
                     {
-                        MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(  UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i]=UnityEngine.Random.Range(UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i])));
+                        MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(  UtillMPN.nowMPNvb[i] = UtillMPN.nowMPNv[i]=UnityEngine.Random.Range(UtillMPN.nowMPNmin[i], UtillMPN.nowMPNmax[i])));
                         UtillMPN.SetNowMPNv(i);
                     }
                     UtillMPN.nowBools[i] = GUILayout.Toggle(UtillMPN.nowBools[i], "All Maid Aplly");
@@ -219,27 +226,27 @@ namespace COM3D2.GP01FBFaceEyeCtr
                             }
                             if (isAllMaid)
                             {
-                                foreach (var item in MaidActivePatch.Maids2.Values)
+                                foreach (var item in MaidActiveUtill.GetMaidAll())
                                 {
                                     item?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                                 }
                             }
                             else
                             {
-                                MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
+                                MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.SetProp(UtillMPN.nowMPNs[i], (int)(UtillMPN.nowMPNv[i] = (int)UtillMPN.nowMPNvb[i]));
                             }
                             //MyLog.LogMessage("changed", mpns[i], mpni[i]);
                         }
                         if (isAllMaid)
                         {
-                            foreach (var item in MaidActivePatch.Maids2.Values)
+                            foreach (var item in MaidActiveUtill.GetMaidAll())
                             {
                                 item?.AllProcProp();
                             }
                         }
                         else
                         {
-                            MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.AllProcProp();
+                            MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted)?.AllProcProp();
                         }
                         SceneEdit.Instance?.UpdateSliders();
                     }
@@ -255,14 +262,14 @@ namespace COM3D2.GP01FBFaceEyeCtr
                 GUILayout.BeginHorizontal();
 
                 isAllMaid = GUILayout.Toggle(isAllMaid, "All Maid Aplly");
-                if (GUILayout.Button("Copy All") && MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null)
+                if (GUILayout.Button("Copy All") && MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted) != null)
                 {
-                    var ms = MaidActivePatch.Maids2.Values;
+                    var ms = MaidActiveUtill.maids;
                     for (int i = 0; i < UtillMPN.nowMPNs.Length; i++)
                     {
                         if (UtillMPN.nowBools[i])
                         {
-                            var m = MaidActivePatch.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
+                            var m = MaidActiveUtill.GetMaid(GP01FBFaceEyeCtrGUI.seleted).GetProp(UtillMPN.nowMPNs[i]);
                             foreach (var item in ms)
                             {
                                 item?.SetProp(UtillMPN.nowMPNs[i], m.value);
@@ -282,7 +289,7 @@ namespace COM3D2.GP01FBFaceEyeCtr
                 GUILayout.Label("maid select");
                 // 여기는 출력된 메이드들 이름만 가져옴
                 // seleted 가 이름 위치 번호만 가져온건데
-                seleted = MaidActivePatch.SelectionGrid3(seleted);
+                seleted = MaidActiveUtill.SelectionGrid(seleted);
 
                 if (GUI.changed)
                 {
